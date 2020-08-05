@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   List, Datagrid, TextField, ReferenceField, ImageField,
-  EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput,
+  EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput, ImageInput,
   Create,
 } from 'react-admin'
 
@@ -21,7 +21,9 @@ export const ServiceEdit = props => (
         <SimpleForm>
             <TextInput disabled source="id" />
             <TextInput source="name" />
-            <TextInput source="icon" />
+            <ImageInput source="icon" accept="image/*">
+              <ImageField source="src" />
+            </ImageInput>
         </SimpleForm>
     </Edit>
 );
@@ -31,7 +33,9 @@ export const ServiceCreate = props => (
         <SimpleForm>
             <TextInput source="id" />
             <TextInput source="name" />
-            <TextInput source="icon" />
+            <ImageInput source="icon" accept="image/*">
+              <ImageField source="src" />
+            </ImageInput>
         </SimpleForm>
     </Create>
 );

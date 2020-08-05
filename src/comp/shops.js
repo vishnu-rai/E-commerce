@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   List, Datagrid, TextField, ReferenceField, ImageField,
-  EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput,
+  EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput, ImageInput,
   Create,
 } from 'react-admin'
 
@@ -24,7 +24,9 @@ export const ShopEdit = props => (
             <TextInput label="id" source="shop" />
             <ReferenceInput source="category" reference="Category"><SelectInput optionText="name" /></ReferenceInput>
             <TextInput source="name" />
-            <TextInput source="image" />
+            <ImageInput source="image" accept="image/*">
+                <ImageField source="src" />
+            </ImageInput>
             <TextInput source="timing" />
         </SimpleForm>
     </Edit>
@@ -35,7 +37,9 @@ export const ShopCreate = props => (
         <SimpleForm>
             <ReferenceInput source="category" reference="Category"><SelectInput optionText="name" /></ReferenceInput>
             <TextInput source="name" />
-            <TextInput source="image" />
+            <ImageInput source="image" accept="image/*">
+                <ImageField source="src" />
+            </ImageInput>
             <TextInput source="timing" />
         </SimpleForm>
     </Create>
