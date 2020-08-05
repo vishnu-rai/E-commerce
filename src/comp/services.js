@@ -15,3 +15,23 @@ export const ServiceList = props => (
         </Datagrid>
     </List>
 );
+
+export const ServiceEdit = props => (
+    <Edit {...props}>
+        <SimpleForm>
+            <TextInput disabled source="id" />
+            <TextInput source="name" />
+            <TextInput source="icon" />
+        </SimpleForm>
+    </Edit>
+);
+
+export const ServiceCreate = props => (
+    <Create {...props}>
+        <SimpleForm>
+            <TextInput source="id" />
+            <TextInput source="name" />
+            <TextInput source="icon" />
+        </SimpleForm>
+    </Create>
+);
