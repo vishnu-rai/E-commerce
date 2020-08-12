@@ -7,7 +7,7 @@ import {
 
 export const ShopList = props => (
     <List {...props}>
-        <Datagrid rowClick="edit">
+        <Datagrid rowClick="show">
             <TextField source="shop" />
             <ReferenceField source="category" reference="Category"><TextField source="name" /></ReferenceField>
             <TextField source="name" />
@@ -35,6 +35,7 @@ export const ShopEdit = props => (
 export const ShopCreate = props => (
     <Create {...props}>
         <SimpleForm>
+            <TextInput label="id" source="shop" />
             <ReferenceInput source="category" reference="Category"><SelectInput optionText="name" /></ReferenceInput>
             <TextInput source="name" />
             <ImageInput source="image" accept="image/*">

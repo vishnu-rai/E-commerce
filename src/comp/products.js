@@ -4,6 +4,7 @@ import {
   EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput,
   Create, Filter
 } from 'react-admin'
+import {parse} from 'query-string'
 
 const ProductFilter=(props)=>(
   <Filter {...props}>
@@ -44,9 +45,14 @@ export const ProductEdit = props => (
   </Edit>
 );
 
-export const ProductCreate = props => (
+export const ProductCreate = props => {
+  let {Shop_id}=parse(props.location.search)
+  if(!Shop_id){Shop_id=""}
+  const redirect= Shop_id?`Shop/${Shop_id}/show/products`:"show"
+  return(
   <Create {...props}>
-    <SimpleForm>
+    <SimpleForm defaultValue={{Shop_id}} redirect={redirect}>
+      <TextInput source="id" />
       <TextInput source="Image" />
       <TextInput source="Category" />
       <TextInput source="Price" />
@@ -56,4 +62,5 @@ export const ProductCreate = props => (
       <TextInput source="Brand" />
     </SimpleForm>
   </Create>
-);
+  )
+};

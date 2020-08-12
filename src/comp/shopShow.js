@@ -1,0 +1,70 @@
+import React from 'react'
+import {
+  List, Datagrid, TextField, ReferenceField, ReferenceManyField, ImageField,
+  EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput, ImageInput,
+  Create,
+  DeleteButton,
+  Show, TabbedShowLayout, Tab,
+  CardActions,ListButton,RefreshButton,
+} from 'react-admin'
+import { Link } from 'react-router-dom';
+import ChatBubbleIcon from "@material-ui/icons/ChatBubble";
+import { withStyles } from '@material-ui/core/styles';
+import { Button } from 'react-admin';
+
+const styles = {
+  button: {
+    margin: '1em',
+    backgroundColor:'rgb(33, 150, 243)',
+    color:'white'
+  }
+};
+
+const AddProductButton = withStyles(styles)(({ classes, record }) => (
+  <Button
+    className={classes.button}
+    variant="contained"
+    component={Link}
+    to={`/Products/create?Shop_id=${record.id}`}
+    label="Add a Product"
+  >
+  </Button>
+));
+
+const ShopShowActions = ({ basePath, data }) => (
+  <CardActions>
+    <ListButton basePath={basePath} />
+    <RefreshButton />
+  </CardActions>
+);
+
+export const ShopShow = props => (
+	<Show {...props} actions={<ShopShowActions />}>
+		<TabbedShowLayout>
+			<Tab label="Summary">
+				<TextField source="id" />
+				<TextField source="category" />
+				<TextField source="timing" />
+				<ImageField source="image" />
+				<TextField source="shop" />
+				<TextField source="name" />
+			</Tab>
+			<Tab label="Products" path="Products">
+				<ReferenceManyField reference="Products" target="Shop_id" addLabel={false}>
+					<Datagrid rowClick="edit" isRowSelectable={record=>true} optimized>
+				    <TextField source="id" />
+				    <ImageField source="Image" title="random"/> 
+				    <TextField source="Price" />
+				    <TextField source="Description" />
+				    <TextField source="Item" />
+				    <TextField source="Category" />
+				    <TextField source="Brand" />
+				    <EditButton />
+				    <DeleteButton />
+				  </Datagrid>
+				</ReferenceManyField>
+				<AddProductButton />
+			</Tab>
+		</TabbedShowLayout>
+	</Show>
+);
