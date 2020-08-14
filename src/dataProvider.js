@@ -5,7 +5,6 @@ import {cacheDataProviderProxy} from 'react-admin'
 const options={
 	app:firebaseApp
 }
-
 const dataProvider=FirebaseDataProvider(firebaseConfig,options)
 const ex_dataProvider=(type,resource,params)=>{
 	if(type==='DELETE' && resource==='Shop'){

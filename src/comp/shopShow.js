@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  List, Datagrid, TextField, ReferenceField, ReferenceManyField, ImageField,
+  List, Datagrid, TextField, ReferenceField, ReferenceManyField, ImageField, DateField,
   EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput, ImageInput,
   Create,
   DeleteButton,
@@ -64,6 +64,22 @@ export const ShopShow = props => (
 				  </Datagrid>
 				</ReferenceManyField>
 				<AddProductButton />
+			</Tab>
+			<Tab label="Orders" path="Orders">
+				<ReferenceManyField reference="Orders" target="Shop_id" addLabel={false}>
+					<Datagrid rowClick="edit" optimized>
+						<TextField source="id" />
+            <TextField source="Payment_type" />
+            <TextField source="Address_id" />
+            <ReferenceField source="Product_id" reference="Products"><TextField source="id" /></ReferenceField>
+            <DateField source="Date" />
+            <ReferenceField source="Shop_id" reference="Shop"><TextField source="id" /></ReferenceField>
+            <TextField source="Price" />
+            <TextField source="Status" />
+            <TextField source="Type" />
+            <EditButton />
+					</Datagrid>
+				</ReferenceManyField>
 			</Tab>
 		</TabbedShowLayout>
 	</Show>

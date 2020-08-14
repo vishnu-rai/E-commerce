@@ -48,7 +48,7 @@ export const ProductEdit = props => (
 export const ProductCreate = props => {
   let {Shop_id}=parse(props.location.search)
   if(!Shop_id){Shop_id=""}
-  const redirect= Shop_id?`Shop/${Shop_id}/show/products`:"show"
+  const redirect= Shop_id?`/Shop/${Shop_id}/show/Products`:"/Products"
   return(
   <Create {...props}>
     <SimpleForm defaultValue={{Shop_id}} redirect={redirect}>
