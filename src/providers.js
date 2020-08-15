@@ -1,11 +1,13 @@
 import {firebaseApp, firebaseConfig, db} from './services/firebase'
-import {FirebaseDataProvider} from 'react-admin-firebase'
+import {FirebaseDataProvider, FirebaseAuthProvider} from 'react-admin-firebase'
 import {cacheDataProviderProxy} from 'react-admin'
 
 const options={
-	app:firebaseApp
+	app:firebaseApp,
+	disableMeta: true
 }
 const dataProvider=FirebaseDataProvider(firebaseConfig,options)
+const authProvider=FirebaseAuthProvider(firebaseConfig,options)
 const ex_dataProvider=(type,resource,params)=>{
 	if(type==='DELETE' && resource==='Shop'){
 		//deletes the products of the shop from 'Products' collection as well
@@ -28,4 +30,4 @@ const ex_dataProvider=(type,resource,params)=>{
 	return dataProvider(type,resource,params)
 }
 const cachedDataProvider=cacheDataProviderProxy(ex_dataProvider,15*1000)
-export {dataProvider, ex_dataProvider, cachedDataProvider}
+export {dataProvider, ex_dataProvider, cachedDataProvider, authProvider}

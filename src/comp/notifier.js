@@ -17,6 +17,7 @@ export const Notifier=()=>{
 				return;
 			}
 			snapshot.docChanges().forEach((change)=>{
+				console.log("yeueu")
 				let parts=location.pathname.split('/')
 				if((parts[1]==="Shop" && parts[2]===change.doc.data().Shop_id) || (parts[1]==="Orders")){
 					refresh()
