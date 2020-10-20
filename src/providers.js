@@ -9,7 +9,20 @@ const options={
 const dataProvider=FirebaseDataProvider(firebaseConfig,options)
 const authProvider=FirebaseAuthProvider(firebaseConfig,options)
 const ex_dataProvider=(type,resource,params)=>{
-	if(type==='DELETE' && resource==='Shop'){
+	if(type==='GET_ONE' && resource==='Category'){
+		return(
+			db.collection('Category')
+				.doc(params.id)
+				.collection('Item')
+				.get()
+				.then(querySnapshot=>{
+					const itemArray = querySnapshot.docs.map(doc=>({id:doc.id, ...doc.data()}))
+					console.log({itemArray})
+					return {data: {id: params.id, name: params.id, Item: itemArray}}
+				})
+		)
+	}
+	if(type==='DELETE' && resource==='Shop'){ 
 		//deletes the products of the shop from 'Products' collection as well
 		return(
 			db.collection('Products').where('Shop_id','==',params.id).get()
