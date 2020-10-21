@@ -18,7 +18,7 @@ export const ProductList = props => (
 <List {...props} filters={<ProductFilter />}>
   <Datagrid rowClick="edit">
     <TextField source="id" />
-    <ImageField source="Image" title="random"/> 
+    <ImageField source="list_image" title="random"/> 
     <TextField source="Price" />
     <TextField source="Description" />
     <ReferenceField source="Shop_id" reference="Shop"><TextField source="name" /></ReferenceField>

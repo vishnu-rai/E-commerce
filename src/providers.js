@@ -9,6 +9,59 @@ const options={
 const dataProvider=FirebaseDataProvider(firebaseConfig,options)
 const authProvider=FirebaseAuthProvider(firebaseConfig,options)
 const ex_dataProvider=(type,resource,params)=>{
+	console.log("HEY")
+	if(type==='UPDATE' && resource==='Category'){
+		console.log(type, resource, params)
+		const {data, previousData} = params
+		const dataHash = data.Item.reduce((acc, curr)=>{
+			acc[curr.id] = curr;
+			return acc;
+		}, {})
+		const prevDataHash = previousData.Item.reduce((acc, curr)=>{
+			acc[curr.id] = curr;
+			return acc;
+		}, {})
+		const addedIds = data.Item.reduce((acc, item)=>{
+			if(!prevDataHash[item.id]){
+				acc.push(item.id)
+			}
+			return acc
+		}, [])
+		const deletedIds = previousData.Item.reduce((acc, item)=>{
+			if(!dataHash[item.id]){
+				acc.push(item.id)
+			}
+			return acc
+		}, [])
+
+		console.log({addedIds, deletedIds})
+		const itemRef = db.collection('Category')
+			.doc(params.id)
+			.collection('Item')
+
+		let batch = db.batch()
+		addedIds.forEach(id=>{
+			let newDocRef = itemRef.doc(id)
+			delete dataHash[id].id
+			batch.set(newDocRef, {...dataHash[id]})
+		})
+		deletedIds.forEach(id=>{
+			let delDocRef = itemRef.doc(id)
+			batch.delete(delDocRef)
+		})
+
+		return(
+			batch.commit().then(()=>{
+				return itemRef.get()
+			})
+			.then(querySnapshot=>{
+				console.log("Inside")
+				const itemArray = querySnapshot.docs.map(doc=>({id: doc.id, ...doc.data()}))
+				console.log({data: {id: params.id, name: params.id, Item: itemArray}})
+				return {data: {id: params.id, name: params.id, Item: itemArray}}
+			})
+		)
+	}
 	if(type==='GET_ONE' && resource==='Category'){
 		return(
 			db.collection('Category')

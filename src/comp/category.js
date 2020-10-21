@@ -4,6 +4,7 @@ import {
   EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput,
   Show, SimpleShowLayout, ArrayField,
   Create,
+  ArrayInput, SimpleFormIterator,
 } from 'react-admin'
 
 export const CategoryList = props => {
@@ -36,10 +37,17 @@ export const CategoryShow = props => (
 export const CategoryEdit = props => (
     <Edit {...props}>
         <SimpleForm>
-            <TextInput disabled source="id" />
+            <TextInput source="id" />
             <TextInput source="name" />
+            <ArrayInput source="Item">
+                <SimpleFormIterator>
+                    <TextInput source="id" />
+                    <TextInput source="type" />
+                    <TextInput source="image" />
+                </SimpleFormIterator>
+            </ArrayInput>
         </SimpleForm>
-    </Edit>
+        </Edit>
 );
 
 export const CategoryCreate = props => (
