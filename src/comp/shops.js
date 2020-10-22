@@ -24,6 +24,7 @@ export const ShopEdit = props => (
             <TextInput label="id" source="shop" />
             <ReferenceInput source="category" reference="Category"><SelectInput optionText="name" /></ReferenceInput>
             <TextInput source="name" />
+            <TextInput source="email" />
             <ImageInput source="image" accept="image/*">
                 <ImageField source="src" />
             </ImageInput>
@@ -38,6 +39,7 @@ export const ShopCreate = props => (
             <TextInput label="id" source="shop" />
             <ReferenceInput source="category" reference="Category"><SelectInput optionText="name" /></ReferenceInput>
             <TextInput source="name" />
+            <TextInput source="email" />
             <ImageInput source="image" accept="image/*">
                 <ImageField source="src" />
             </ImageInput>

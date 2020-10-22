@@ -9,7 +9,18 @@ const options={
 const dataProvider=FirebaseDataProvider(firebaseConfig,options)
 const authProvider=FirebaseAuthProvider(firebaseConfig,options)
 const ex_dataProvider=(type,resource,params)=>{
-	console.log("HEY")
+	console.log(type, resource);
+	if(type==='CREATE' && resource==='Shop'){
+		console.log("shop waala", params)
+		const {shopData} = params.data
+		let createUserandShop = firebaseApp.functions.httpsCallable('createUserandShop');
+		return (
+			createUserandShop({shopData})
+			.then(result=>{
+				return result.shop
+			})
+		)
+	}
 	if(type==='UPDATE' && resource==='Category'){
 		console.log(type, resource, params)
 		const {data, previousData} = params
