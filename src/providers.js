@@ -12,12 +12,13 @@ const ex_dataProvider=(type,resource,params)=>{
 	console.log(type, resource);
 	if(type==='CREATE' && resource==='Shop'){
 		console.log("shop waala", params)
-		const {shopData} = params.data
-		let createUserandShop = firebaseApp.functions.httpsCallable('createUserandShop');
+		const shopData = params.data
+		let createUserandShop = firebaseApp.functions().httpsCallable('createUserandShop');
 		return (
 			createUserandShop({shopData})
 			.then(result=>{
-				return result.shop
+				console.log({resp: result.data.shop})
+				return {data: result.data.shop}
 			})
 		)
 	}
