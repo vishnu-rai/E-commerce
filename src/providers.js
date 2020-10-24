@@ -9,7 +9,29 @@ const options={
 const dataProvider=FirebaseDataProvider(firebaseConfig,options)
 const authProvider=FirebaseAuthProvider(firebaseConfig,options)
 const ex_dataProvider=(type,resource,params)=>{
-	console.log(type, resource);
+	console.log(type, resource, params);
+	if(type === 'UPDATE' && resource === 'Category'){
+		const {data} = params
+		if(data.meta && data.meta.isSubCollection){
+			if(data.meta.type = 'CREATE'){
+				let itemRef = db.collection('Category')
+				.doc(params.id)
+				.collection('Item')
+
+				return (
+					itemRef.doc(data.values.id)
+					.set(data.values)
+					.then(()=>{
+						return itemRef.get()
+					})
+					.then(querySnapshot=>{
+						const itemArray = querySnapshot.docs.map(doc=>({id: doc.id, ...doc.data()}))
+						return {data: {id: params.id, name: params.id, Item: itemArray}}
+					})
+				)
+			}
+		}
+	}
 	if(type==='CREATE' && resource==='Shop'){
 		console.log("shop waala", params)
 		const shopData = params.data
@@ -23,6 +45,7 @@ const ex_dataProvider=(type,resource,params)=>{
 		)
 	}
 	if(type==='UPDATE' && resource==='Category'){
+		return;
 		console.log(type, resource, params)
 		const {data, previousData} = params
 		const dataHash = data.Item.reduce((acc, curr)=>{

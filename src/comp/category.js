@@ -7,6 +7,8 @@ import {
   ArrayInput, SimpleFormIterator,
 } from 'react-admin'
 
+import CategoryItemCreateButton from './CategoryItemCreateButton'
+
 export const CategoryList = props => {
     return (
     <List {...props}>
@@ -23,6 +25,7 @@ export const CategoryShow = props => (
         <SimpleShowLayout>
             <TextField source="id" />
             <TextField source="name" />
+            <CategoryItemCreateButton />
             <ArrayField source="Item">
                 <Datagrid>
                     <TextField source="id" />
