@@ -38,7 +38,7 @@ function CategoryItemCreateButton(props) {
 
   const handleSubmit = async values => {
       update(
-        { payload: {id: categoryId, data: {values, meta: {isSubCollection: true}}}},
+        { payload: {id: categoryId, data: {values, meta: {isSubCollection: true, type: 'CREATE'}}}},
         {
           onSuccess: ({ data }) => {
             setShowDialog(false);

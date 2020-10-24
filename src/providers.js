@@ -13,7 +13,7 @@ const ex_dataProvider=(type,resource,params)=>{
 	if(type === 'UPDATE' && resource === 'Category'){
 		const {data} = params
 		if(data.meta && data.meta.isSubCollection){
-			if(data.meta.type = 'CREATE'){
+			if(data.meta.type === 'CREATE'){
 				let itemRef = db.collection('Category')
 				.doc(params.id)
 				.collection('Item')
