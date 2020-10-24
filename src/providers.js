@@ -13,12 +13,11 @@ const ex_dataProvider=(type,resource,params)=>{
 	if(type === 'UPDATE' && resource === 'Category'){
 		const {data} = params
 		if(data.meta && data.meta.isSubCollection){
-			if(data.meta.type === 'CREATE'){
-				let itemRef = db.collection('Category')
+			let itemRef = db.collection('Category')
 				.doc(params.id)
 				.collection('Item')
-
-				return (
+			if(data.meta.type === 'CREATE'){
+					return (
 					itemRef.doc(data.values.id)
 					.set(data.values)
 					.then(()=>{
@@ -30,8 +29,21 @@ const ex_dataProvider=(type,resource,params)=>{
 					})
 				)
 			}
+			else if(data.meta.type === 'DELETE'){
+				return(
+					itemRef.doc(data.itemId).delete()
+					.then(()=>{
+						return itemRef.get()
+					})
+					.then(querySnapshot=>{
+						const itemArray = querySnapshot.docs.map(doc=>({id: doc.id, ...doc.data()}))
+						return {data: {id: params.id, name: params.id, Item: itemArray}}
+					})
+				)
+			}
 		}
 	}
+
 	if(type==='CREATE' && resource==='Shop'){
 		console.log("shop waala", params)
 		const shopData = params.data
@@ -44,59 +56,7 @@ const ex_dataProvider=(type,resource,params)=>{
 			})
 		)
 	}
-	if(type==='UPDATE' && resource==='Category'){
-		return;
-		console.log(type, resource, params)
-		const {data, previousData} = params
-		const dataHash = data.Item.reduce((acc, curr)=>{
-			acc[curr.id] = curr;
-			return acc;
-		}, {})
-		const prevDataHash = previousData.Item.reduce((acc, curr)=>{
-			acc[curr.id] = curr;
-			return acc;
-		}, {})
-		const addedIds = data.Item.reduce((acc, item)=>{
-			if(!prevDataHash[item.id]){
-				acc.push(item.id)
-			}
-			return acc
-		}, [])
-		const deletedIds = previousData.Item.reduce((acc, item)=>{
-			if(!dataHash[item.id]){
-				acc.push(item.id)
-			}
-			return acc
-		}, [])
 
-		console.log({addedIds, deletedIds})
-		const itemRef = db.collection('Category')
-			.doc(params.id)
-			.collection('Item')
-
-		let batch = db.batch()
-		addedIds.forEach(id=>{
-			let newDocRef = itemRef.doc(id)
-			delete dataHash[id].id
-			batch.set(newDocRef, {...dataHash[id]})
-		})
-		deletedIds.forEach(id=>{
-			let delDocRef = itemRef.doc(id)
-			batch.delete(delDocRef)
-		})
-
-		return(
-			batch.commit().then(()=>{
-				return itemRef.get()
-			})
-			.then(querySnapshot=>{
-				console.log("Inside")
-				const itemArray = querySnapshot.docs.map(doc=>({id: doc.id, ...doc.data()}))
-				console.log({data: {id: params.id, name: params.id, Item: itemArray}})
-				return {data: {id: params.id, name: params.id, Item: itemArray}}
-			})
-		)
-	}
 	if(type==='GET_ONE' && resource==='Category'){
 		return(
 			db.collection('Category')

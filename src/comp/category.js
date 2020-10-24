@@ -8,6 +8,7 @@ import {
 } from 'react-admin'
 
 import CategoryItemCreateButton from './CategoryItemCreateButton'
+import CategoryItemDeleteButton from './CategoryItemDeleteButton'
 
 export const CategoryList = props => {
     return (
@@ -20,8 +21,9 @@ export const CategoryList = props => {
     </List>
 )};
 
-export const CategoryShow = props => (
-    <Show {...props}>
+export const CategoryShow = props => {
+    
+    return <Show {...props}>
         <SimpleShowLayout>
             <TextField source="id" />
             <TextField source="name" />
@@ -31,11 +33,12 @@ export const CategoryShow = props => (
                     <TextField source="id" />
                     <TextField source="image" />
                     <TextField source="type" />
+                    <CategoryItemDeleteButton parentId={props.id}/>
                 </Datagrid>
             </ArrayField>
         </SimpleShowLayout>
     </Show>
-);
+};
 
 export const CategoryEdit = props => (
     <Edit {...props}>

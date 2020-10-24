@@ -21,7 +21,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 
 function CategoryItemCreateButton(props) {
   const [showDialog, setShowDialog] = useState(false);
-  const [update, { loading }] = useUpdate('Category');
+  const [update, { loading }] = useUpdate(props.resource);
   const notify = useNotify();
   const refresh = useRefresh();
   // const form = useForm();
