@@ -16,6 +16,7 @@ const ex_dataProvider=(type,resource,params)=>{
 			let itemRef = db.collection('Category')
 				.doc(params.id)
 				.collection('Item')
+
 			if(data.meta.type === 'CREATE'){
 					return (
 					itemRef.doc(data.values.id)
@@ -29,6 +30,7 @@ const ex_dataProvider=(type,resource,params)=>{
 					})
 				)
 			}
+
 			else if(data.meta.type === 'DELETE'){
 				return(
 					itemRef.doc(data.itemId).delete()
@@ -57,6 +59,46 @@ const ex_dataProvider=(type,resource,params)=>{
 		)
 	}
 
+	if(type==='UPDATE' && resource==='Shop'){
+		console.log("Caught ya")
+		let {Item: currItems=[], ...newData} = params.data
+		let {Item: prevItems=[], ...prevData} = params.previousData
+		let shopRef = db.collection('Shop').doc(params.id)
+		let itemRef = shopRef.collection('Items')
+
+		let currHash = currItems.reduce((acc, val)=>{
+			acc[val.id] = val
+			return acc
+		}, {})
+		let prevHash = prevItems.reduce((acc, val)=>{
+			acc[val.id] = val
+			return acc
+		}, {})
+
+		let batch = db.batch()
+		batch.update(shopRef, newData)
+		prevItems.forEach(item=>{
+			if(!currHash[item.id]){
+				let docRef = itemRef.doc(item.id)
+				batch.delete(docRef)
+			}
+		})
+		currItems.forEach(item=>{
+			if(!prevHash[item.id]){
+				let docRef = itemRef.doc(item.id)
+				let {id, ...itemData} = item
+				batch.set(docRef, itemData)
+			}
+		})
+
+		return (
+			batch.commit()
+			.then(()=>{
+				return {data: params.data}
+			})
+		)
+	}
+
 	if(type==='GET_ONE' && resource==='Category'){
 		return(
 			db.collection('Category')
@@ -69,6 +111,30 @@ const ex_dataProvider=(type,resource,params)=>{
 					return {data: {id: params.id, name: params.id, Item: itemArray}}
 				})
 		)
+	}
+
+	if(type==='GET_ONE' && resource==='Shop'){
+		let shopRef = db.collection('Shop').doc(params.id)
+		let itemRef = shopRef.collection('Items')
+		return Promise.all([shopRef.get(), itemRef.get()])
+		.then(([shopDoc, itemSnap])=>{
+			let itemsArray = itemSnap.docs.map(doc=>({id: doc.id, ...doc.data()}))
+			return {data: {id: params.id, ...shopDoc.data(), Item: itemsArray}}
+		})
+	}
+
+	if(type==='GET_LIST' && resource==='Category/Item'){
+		console.log("HHIIIT")
+		const {shop_id, category} = params.filter
+		return db.collection('Category')
+			.doc(category)
+			.collection('Item')
+			.get()
+			.then(querySnapshot=>{
+				const itemArray = querySnapshot.docs.map(doc=>({id:doc.id, ...doc.data()}))
+				console.log({itemArray})
+				return {data: itemArray, total: itemArray.length}
+			})
 	}
 	if(type==='DELETE' && resource==='Shop'){ 
 		//deletes the products of the shop from 'Products' collection as well

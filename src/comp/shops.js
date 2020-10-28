@@ -3,7 +3,10 @@ import {
   List, Datagrid, TextField, ReferenceField, ImageField,
   EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput, ImageInput,
   Create,
+  ReferenceArrayInput, SelectArrayInput, FormDataConsumer, AutocompleteArrayInput
 } from 'react-admin'
+
+import EffDropDown from './effDropDown'
 
 export const ShopList = props => (
     <List {...props}>
@@ -18,11 +21,13 @@ export const ShopList = props => (
     </List>
 );
 
-export const ShopEdit = props => (
+export const ShopEdit = props => {
+    return (
     <Edit {...props}>
         <SimpleForm warnWhenUnsavedChanges>
-            <TextInput label="id" source="shop" />
+            <TextInput label="id" source="shop_id" />
             <ReferenceInput source="category" reference="Category"><SelectInput optionText="name" /></ReferenceInput>
+            <EffDropDown source="Items" />
             <TextInput source="name" />
             <TextInput source="email" />
             <ImageInput source="image" accept="image/*">
@@ -31,7 +36,7 @@ export const ShopEdit = props => (
             <TextInput source="timing" />
         </SimpleForm>
     </Edit>
-);
+)};
 
 export const ShopCreate = props => (
     <Create {...props}>
@@ -47,3 +52,4 @@ export const ShopCreate = props => (
         </SimpleForm>
     </Create>
 );
+

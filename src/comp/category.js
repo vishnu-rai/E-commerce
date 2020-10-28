@@ -13,7 +13,7 @@ import CategoryItemDeleteButton from './CategoryItemDeleteButton'
 export const CategoryList = props => {
     return (
     <List {...props}>
-        <Datagrid rowClick="edit">
+        <Datagrid rowClick="show">
             <TextField source="id" />
             <TextField source="name" />
             <EditButton />
@@ -22,7 +22,7 @@ export const CategoryList = props => {
 )};
 
 export const CategoryShow = props => {
-    
+
     return <Show {...props}>
         <SimpleShowLayout>
             <TextField source="id" />
@@ -45,13 +45,6 @@ export const CategoryEdit = props => (
         <SimpleForm>
             <TextInput source="id" />
             <TextInput source="name" />
-            <ArrayInput source="Item">
-                <SimpleFormIterator>
-                    <TextInput source="id" />
-                    <TextInput source="type" />
-                    <TextInput source="image" />
-                </SimpleFormIterator>
-            </ArrayInput>
         </SimpleForm>
         </Edit>
 );
