@@ -1,4 +1,4 @@
-import {firebaseApp, firebaseConfig, db} from './services/firebase'
+import {firebaseApp, firebaseConfig, db, storage} from './services/firebase'
 import {FirebaseDataProvider, FirebaseAuthProvider} from 'react-admin-firebase'
 import {cacheDataProviderProxy} from 'react-admin'
 
@@ -10,23 +10,23 @@ const dataProvider=FirebaseDataProvider(firebaseConfig,options)
 const authProvider=FirebaseAuthProvider(firebaseConfig,options)
 const ex_dataProvider=(type,resource,params)=>{
 	console.log(type, resource, params);
-	if(type === 'UPDATE' && resource === 'Category'){
+	if(type === 'UPDATE' && (resource==='Category' || resource==='BCategory')){
 		const {data} = params
 		if(data.meta && data.meta.isSubCollection){
-			let itemRef = db.collection('Category')
+			let itemRef = db.collection(resource)
 				.doc(params.id)
 				.collection('Item')
 
 			if(data.meta.type === 'CREATE'){
 					return (
-					itemRef.doc(data.values.id)
+					itemRef.doc()
 					.set(data.values)
 					.then(()=>{
 						return itemRef.get()
 					})
 					.then(querySnapshot=>{
 						const itemArray = querySnapshot.docs.map(doc=>({id: doc.id, ...doc.data()}))
-						return {data: {id: params.id, name: params.id, Item: itemArray}}
+						return {data: {...data, Item: itemArray}}
 					})
 				)
 			}
@@ -44,25 +44,100 @@ const ex_dataProvider=(type,resource,params)=>{
 				)
 			}
 		}
+		const {id: exId, Item: exItem,image: newImg="", ...newData} = params.data
+		const {image: prevImg=""} = params.previousData
+		const docRef = db.collection(resource).doc(params.id)
+
+		return docRef.update(newData).then(async ()=>{
+			if((newImg === prevImg) || !newImg){
+				return {data: params.data}
+			}
+			const categoryId = params.id
+			const imageRef = storage.ref().child("Category").child(categoryId+"_CategImage")
+			await imageRef.put(newImg.rawFile)
+			const url = await imageRef.getDownloadURL()
+			await docRef.update({
+				image: url
+			})
+			return {data: {...params.data, image: url}}
+		})
+	}
+
+	if(type==='CREATE' && (resource==='Category' || resource==='BCategory')){
+		const {image, ...categoryData} = params.data
+		const docRef = db.collection(resource).doc()
+		return (
+			docRef.set(categoryData)
+			.then(()=>{
+				return docRef.get()
+			})
+			.then(async (doc)=>{
+				const categoryId = doc.id
+				if(!image){
+					return {data: {id: categoryId, ...doc.data()}}
+				} 
+				const imageRef = storage.ref().child(resource).child(categoryId+"_CategImage")
+				await imageRef.put(image.rawFile)
+				const url = await imageRef.getDownloadURL()
+				await docRef.update({
+					image: url
+				})
+				return {data: {categoryId, ...doc.data(), image: url}}
+			})
+		)
 	}
 
 	if(type==='CREATE' && resource==='Shop'){
 		console.log("shop waala", params)
-		const shopData = params.data
+		const {image, ...shopData} = params.data
 		let createUserandShop = firebaseApp.functions().httpsCallable('createUserandShop');
 		return (
 			createUserandShop({shopData})
-			.then(result=>{
-				console.log({resp: result.data.shop})
-				return {data: result.data.shop}
+			.then(async (result)=>{
+				const shopId = result.data.shop.id
+				if(!image){
+					return {data: result.data.shop}
+				} 
+				const imageRef = storage.ref().child(shopId+"_ShopImage")
+				await imageRef.put(image.rawFile)
+				const url = await imageRef.getDownloadURL()
+				const docRef = db.collection("Shop").doc(shopId)
+				await docRef.update({
+					image: url
+				})
+				return {data: {...result.data.shop, image: url}}
 			})
+		)
+	}
+
+	if(type==='DELETE' && resource==='Shop'){ 
+		//deletes the products of the shop from 'Products' collection as well
+		let deleteShopAndProducts = firebaseApp.functions().httpsCallable('deleteShopAndProducts')
+		return(
+			deleteShopAndProducts({shopId: params.id})
+			.then((result)=>{
+				return {data: params.previousData}
+			})
+			// db.collection('Products').where('Shop_id','==',params.id).get()
+			// .then((querySnapshot)=>{
+			// 	let batch=db.batch()
+			// 	querySnapshot.forEach(doc=>{
+			// 		batch.delete(doc.ref)
+			// 	})
+			// 	const delShopRef=db.collection('Shop').doc(params.id)
+			// 	batch.delete(delShopRef)
+			// 	return batch.commit()
+			// })
+			// .then(()=>{
+			// 	return {data:params.previousData}
+			// })
 		)
 	}
 
 	if(type==='UPDATE' && resource==='Shop'){
 		console.log("Caught ya")
-		let {Item: currItems=[], ...newData} = params.data
-		let {Item: prevItems=[], ...prevData} = params.previousData
+		let {Items: currItems=[], image: newImg, ...newData} = params.data
+		let {Items: prevItems=[], image: prevImg, ...prevData} = params.previousData
 		let shopRef = db.collection('Shop').doc(params.id)
 		let itemRef = shopRef.collection('Items')
 
@@ -93,23 +168,30 @@ const ex_dataProvider=(type,resource,params)=>{
 
 		return (
 			batch.commit()
-			.then(()=>{
-				return {data: params.data}
+			.then(async ()=>{
+				if((newImg === prevImg) || !newImg){
+					return {data: params.data}
+				}
+				const shopId = params.data.id
+				const imageRef = storage.ref().child(shopId+"_ShopImage")
+				await imageRef.put(newImg.rawFile)
+				const url = await imageRef.getDownloadURL()
+				await shopRef.update({
+					image: url
+				})
+				return {data: {...params.data, image: url}}
 			})
 		)
 	}
 
-	if(type==='GET_ONE' && resource==='Category'){
-		return(
-			db.collection('Category')
-				.doc(params.id)
-				.collection('Item')
-				.get()
-				.then(querySnapshot=>{
-					const itemArray = querySnapshot.docs.map(doc=>({id:doc.id, ...doc.data()}))
-					console.log({itemArray})
-					return {data: {id: params.id, name: params.id, Item: itemArray}}
-				})
+	if(type==='GET_ONE' && (resource==='Category' || resource==='BCategory')){
+		const docRef = db.collection(resource).doc(params.id)
+		return (
+			Promise.all([docRef.get(), docRef.collection('Item').get()])
+			.then(([mainDoc, itemSnap])=>{
+				const itemArray = itemSnap.docs.map(doc=>({id:doc.id, ...doc.data()}))
+				return {data: {id: params.id, ...mainDoc.data(), Item: itemArray}}
+			})
 		)
 	}
 
@@ -119,7 +201,7 @@ const ex_dataProvider=(type,resource,params)=>{
 		return Promise.all([shopRef.get(), itemRef.get()])
 		.then(([shopDoc, itemSnap])=>{
 			let itemsArray = itemSnap.docs.map(doc=>({id: doc.id, ...doc.data()}))
-			return {data: {id: params.id, ...shopDoc.data(), Item: itemsArray}}
+			return {data: {id: params.id, ...shopDoc.data(), Items: itemsArray}}
 		})
 	}
 
@@ -135,24 +217,6 @@ const ex_dataProvider=(type,resource,params)=>{
 				console.log({itemArray})
 				return {data: itemArray, total: itemArray.length}
 			})
-	}
-	if(type==='DELETE' && resource==='Shop'){ 
-		//deletes the products of the shop from 'Products' collection as well
-		return(
-			db.collection('Products').where('Shop_id','==',params.id).get()
-			.then((querySnapshot)=>{
-				let batch=db.batch()
-				querySnapshot.forEach(doc=>{
-					batch.delete(doc.ref)
-				})
-				const delShopRef=db.collection('Shop').doc(params.id)
-				batch.delete(delShopRef)
-				return batch.commit()
-			})
-			.then(()=>{
-				return {data:params.previousData}
-			})
-		)
 	}
 	return dataProvider(type,resource,params)
 }

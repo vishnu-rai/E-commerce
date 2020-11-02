@@ -16,7 +16,7 @@ const styles = {
 
 const CategoryItemDeleteButton = props=>{
   const [showDialog, setShowDialog] = useState(false);
-  const [update, { loading }] = useUpdate(props.resource);
+  const [update, { loading }] = useUpdate(props.resource)
   const notify = useNotify();
   const refresh = useRefresh();
   // const form = useForm();

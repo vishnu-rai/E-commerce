@@ -1,10 +1,11 @@
 import React from 'react'
 import {
   List, Datagrid, TextField, ReferenceField, ImageField,
-  EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput,
+  EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput, ImageInput,
   Show, SimpleShowLayout, ArrayField,
   Create,
   ArrayInput, SimpleFormIterator,
+  CardActions, ListButton, RefreshButton, TopToolbar,
 } from 'react-admin'
 
 import CategoryItemCreateButton from './CategoryItemCreateButton'
@@ -15,7 +16,9 @@ export const CategoryList = props => {
     <List {...props}>
         <Datagrid rowClick="show">
             <TextField source="id" />
+            <ImageField source="image" />
             <TextField source="name" />
+            <TextField source="status" />
             <EditButton />
         </Datagrid>
     </List>
@@ -23,15 +26,15 @@ export const CategoryList = props => {
 
 export const CategoryShow = props => {
 
-    return <Show {...props}>
+    return <Show {...props} actions={<CategoryShowActions />}>
         <SimpleShowLayout>
             <TextField source="id" />
             <TextField source="name" />
-            <CategoryItemCreateButton />
+            <ImageField source="image" />
+            <TextField source="status" />
             <ArrayField source="Item">
                 <Datagrid>
                     <TextField source="id" />
-                    <TextField source="image" />
                     <TextField source="type" />
                     <CategoryItemDeleteButton parentId={props.id}/>
                 </Datagrid>
@@ -43,17 +46,35 @@ export const CategoryShow = props => {
 export const CategoryEdit = props => (
     <Edit {...props}>
         <SimpleForm>
-            <TextInput source="id" />
+            <TextInput disabled source="id" />
             <TextInput source="name" />
+            <TextInput source="status" />
+            <ImageInput label="New Image" source="image" accept="image/*">
+                <ImageField source="src" />
+            </ImageInput>
         </SimpleForm>
         </Edit>
 );
 
+const defaultValues = {status: "1"}
 export const CategoryCreate = props => (
     <Create {...props}>
-        <SimpleForm>
-            <TextInput source="id" />
+        <SimpleForm initialValues={defaultValues}>
             <TextInput source="name" />
+            <TextInput source="status" />
+            <ImageInput label="New Image" source="image" accept="image/*">
+                <ImageField source="src" />
+            </ImageInput>
         </SimpleForm>
     </Create>
 );
+
+const CategoryShowActions = ({basePath, data, resource}) => {
+    const categoryId = data ? data.id : null
+    return(
+        <TopToolbar>
+          <CategoryItemCreateButton customProps={{categoryId, resource}} />
+          <EditButton basePath={basePath} record={data} />
+        </TopToolbar>
+    )
+};

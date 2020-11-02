@@ -18,10 +18,11 @@ import IconCancel from '@material-ui/icons/Cancel';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 function CategoryItemCreateButton(props) {
   const [showDialog, setShowDialog] = useState(false);
-  const [update, { loading }] = useUpdate(props.resource);
+  const [update, { loading }] = useUpdate(props.customProps.resource);
   const notify = useNotify();
   const refresh = useRefresh();
   // const form = useForm();
@@ -34,7 +35,7 @@ function CategoryItemCreateButton(props) {
     setShowDialog(false);
   };
 
-  const categoryId = props.record.id
+  const categoryId = props.customProps.categoryId
 
   const handleSubmit = async values => {
       update(
@@ -55,7 +56,7 @@ function CategoryItemCreateButton(props) {
 
   return (
     <>
-      <Button onClick={handleClick} label="ra.action.create">
+      <Button onClick={handleClick} label="Add Item">
         <IconContentAdd />
       </Button>
       <Dialog
@@ -64,18 +65,16 @@ function CategoryItemCreateButton(props) {
         onClose={handleCloseClick}
         aria-label="Add Item"
       >
-        <DialogTitle>Create post</DialogTitle>
+        <DialogTitle>Add Item to Category</DialogTitle>
         <DialogContent>
           <SimpleForm
             resource="Category"
             // We override the redux-form onSubmit prop to handle the submission ourselves
             save={handleSubmit}
             // We want no toolbar at all as we have our modal actions
-            toolbar={<CategoryItemCreateButtonToolbar onCancel={handleCloseClick} />}
+            toolbar={<CategoryItemCreateButtonToolbar loading={loading} onCancel={handleCloseClick} />}
           >
-            <TextInput source="id" validate={required()} />
             <TextInput source="type" validate={required()} />
-            <TextInput source="image" validate={required()} />
           </SimpleForm>
         </DialogContent>
       </Dialog>
@@ -85,10 +84,14 @@ function CategoryItemCreateButton(props) {
 
 export default CategoryItemCreateButton;
 
-function CategoryItemCreateButtonToolbar({ onCancel, ...props }) {
+function CategoryItemCreateButtonToolbar({ onCancel, loading, ...props }) {
   return (
     <Toolbar {...props}>
-      <SaveButton submitOnEnter={true} />
+      {
+        loading ?
+        <CircularProgress />
+        :<SaveButton submitOnEnter={true} />
+      }
       <CancelButton onClick={onCancel} />
     </Toolbar>
   );

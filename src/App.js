@@ -12,11 +12,12 @@ import {Notifier} from './comp/notifier'
 
 const App = () => (
 	<Admin dataProvider={ex_dataProvider} authProvider={authProvider}>
-		<Resource name="Products" list={ProductList} edit={ProductEdit} create={ProductCreate} />
+		<Resource name="Products"/>
 		<Resource name="Shop" list={ShopList} edit={ShopEdit} create={ShopCreate} show={ShopShow}/>
 		<Resource name="Orders" list={OrderList} edit={OrderEdit} create={OrderCreate} />
 		<Resource name="Services" list={ServiceList} edit={ServiceEdit} create={ServiceCreate}/>
 		<Resource name="Category" list={CategoryList} edit={CategoryEdit} create={CategoryCreate} show={CategoryShow} />
+		<Resource name="BCategory" list={CategoryList} edit={CategoryEdit} create={CategoryCreate} show={CategoryShow} />
 		<Resource name="Add" list={AddList} edit={AddEdit} create={AddCreate} />
     <Resource name="Category/Item" />
 		<Notifier />
