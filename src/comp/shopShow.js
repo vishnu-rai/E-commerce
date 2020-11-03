@@ -2,7 +2,7 @@ import React from 'react'
 import {
   List, Datagrid, TextField, ReferenceField, ReferenceManyField, ImageField, DateField,
   EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput, ImageInput,
-  Create,
+  Create, SingleFieldList, ArrayField, ChipField,
   DeleteButton,
   Show, TabbedShowLayout, Tab,
   CardActions,ListButton,RefreshButton,
@@ -42,12 +42,20 @@ export const ShopShow = props => (
 	<Show {...props} actions={<ShopShowActions />}>
 		<TabbedShowLayout>
 			<Tab label="Summary">
-				<TextField source="id" />
+				<TextField label="Shop Id" source="shop_id" />
+        <TextField source="name" />
 				<TextField source="category" />
+        <ArrayField source="Items">
+          <SingleFieldList linkType={false}>
+            <ChipField source="name"/>
+          </SingleFieldList>
+        </ArrayField>
+        <TextField source="Address" />
+        <TextField source="Pincode" />
+        <TextField source="Phone" />
+        <TextField source="min" />
 				<TextField source="timing" />
 				<ImageField source="image" />
-				<TextField source="shop" />
-				<TextField source="name" />
 			</Tab>
 			<Tab label="Products" path="Products">
 				<ReferenceManyField reference="Products" target="Shop_id" addLabel={false}>

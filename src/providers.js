@@ -112,25 +112,46 @@ const ex_dataProvider=(type,resource,params)=>{
 
 	if(type==='DELETE' && resource==='Shop'){ 
 		//deletes the products of the shop from 'Products' collection as well
-		let deleteShopAndProducts = firebaseApp.functions().httpsCallable('deleteShopAndProducts')
+		const shopId = params.id
+		if(!shopId){
+		  return Promise.reject(new Error("Invalid Shop Id"))
+		}
 		return(
-			deleteShopAndProducts({shopId: params.id})
-			.then((result)=>{
-				return {data: params.previousData}
-			})
-			// db.collection('Products').where('Shop_id','==',params.id).get()
-			// .then((querySnapshot)=>{
-			// 	let batch=db.batch()
-			// 	querySnapshot.forEach(doc=>{
-			// 		batch.delete(doc.ref)
-			// 	})
-			// 	const delShopRef=db.collection('Shop').doc(params.id)
-			// 	batch.delete(delShopRef)
-			// 	return batch.commit()
-			// })
-			// .then(()=>{
-			// 	return {data:params.previousData}
-			// })
+		  db.collection('Products').where('Shop_id', '==', shopId)
+		  .get().then(async (querySnapshot) =>{
+		    let batch = db.batch()
+		    querySnapshot.docs.forEach(doc=>{
+		      let {list_image: imgURLs=[], Image: imgURL=""} = doc.data()
+		      imgURLs.push(imgURL)
+
+		      imgURLs.forEach(url=>{
+		        if(url){
+		          storage.refFromURL(url).delete()
+		          .catch(error=>{
+		            console.error("Error in deleting image: ", url, error.message)
+		          })
+		        }
+		        batch.delete(doc.ref)
+		      })
+		    })
+		    const shopRef = db.collection('Shop').doc(shopId)
+		    const shopDoc = await shopRef.get()
+		    if(!shopDoc){
+		      throw new Error("No shop found")
+		    }
+		    let url = shopDoc.data().image
+		    if(url){
+		      storage.refFromURL(url).delete()
+		      .catch(error=>{
+		        console.error("Error in deleting image: ", url, error.message)
+		      })
+		    }
+		    batch.delete(shopRef)
+		    return batch.commit()
+		  })
+		  .then(()=>{
+		    return {data: params.previousData}
+		  })
 		)
 	}
 
@@ -161,8 +182,8 @@ const ex_dataProvider=(type,resource,params)=>{
 		currItems.forEach(item=>{
 			if(!prevHash[item.id]){
 				let docRef = itemRef.doc(item.id)
-				let {id, ...itemData} = item
-				batch.set(docRef, itemData)
+				let {id, type: name} = item
+				batch.set(docRef, {name})
 			}
 		})
 

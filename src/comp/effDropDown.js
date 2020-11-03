@@ -50,7 +50,7 @@ const EffDropDown = props=>{
       multiple
       value={inputValues}
       options={choices}
-      getOptionLabel={option=>option.type}
+      getOptionLabel={option=>(option.type || option.name || option.id)}
       getOptionSelected={(option, value)=>{
         return option.id === value.id
       }}

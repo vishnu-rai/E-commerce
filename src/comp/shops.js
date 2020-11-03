@@ -38,25 +38,24 @@ export const ShopEdit = props => {
     return (
     <Edit {...props}>
         <SimpleForm warnWhenUnsavedChanges>
-            <TextInput source="Address" />
-            <TextInput source="delivery_charge" />
-            <TextInput source="type" />
             <TextInput disabled label="id" source="shop_id" />
-            <SelectInput source="category_type" choices={[
+            <TextInput disabled source="email" />
+            <TextInput source="name" validate={required()} />
+            <SelectInput source="category_type" validate={required()} choices={[
                 {id: 'Category', name: "Category"},
                 {id: 'BCategory', name: "BCategory"}
             ]}/>
             <FormDataConsumer> 
                 {({formData, ...rest})=>(
                     <ReferenceInput source="category" reference={formData.category_type || "Category"} {...rest}>
-                        <SelectInput optionText="name" />
+                        <SelectInput optionText="name" validate={required()} />
                     </ReferenceInput>
                 )}
             </FormDataConsumer>
             <EffDropDown source="Items" />
-            <TextInput source="name" />
-            <TextInput source="email" />
-            <ImageField source="image" label="Current Image" />
+            <TextInput source="Address" />
+            <TextInput source="delivery_charge" />
+            <TextInput source="type" />
             <ImageInput label="New Image" source="image" accept="image/*">
                 <ImageField source="src" />
             </ImageInput>
@@ -68,20 +67,20 @@ export const ShopEdit = props => {
 export const ShopCreate = props => (
     <Create {...props}>
         <SimpleForm>
-            <TextInput label="id" source="shop" />
-            <SelectInput source="category_type" choices={[
+            <TextInput source="name" validate={required()}/>
+            <TextInput source="email" validate={required()}/>
+            <SelectInput source="category_type" validate={required()} choices={[
                 {id: 'Category', name: "Category"},
                 {id: 'BCategory', name: "BCategory"}
             ]}/>
             <FormDataConsumer> 
                 {({formData, ...rest})=>(
                     <ReferenceInput source="category" reference={formData.category_type || "Category"} {...rest}>
-                        <SelectInput optionText="name" />
+                        <SelectInput validate={required()} optionText="name"/>
                     </ReferenceInput>
                 )}
             </FormDataConsumer>
-            <TextInput source="name" />
-            <TextInput source="email" />
+
             <ImageInput source="image" accept="image/*">
                 <ImageField source="src" />
             </ImageInput>

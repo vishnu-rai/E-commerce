@@ -8,17 +8,19 @@ import {ServiceList, ServiceEdit, ServiceCreate} from './comp/services'
 import {OrderList, OrderEdit, OrderCreate} from './comp/orders'
 import {CategoryList, CategoryEdit, CategoryCreate, CategoryShow} from './comp/category'
 import {AddList, AddEdit, AddCreate} from './comp/add'
+import {CouponList, CouponEdit, CouponCreate} from './comp/coupon'
 import {Notifier} from './comp/notifier'
 
 const App = () => (
 	<Admin dataProvider={ex_dataProvider} authProvider={authProvider}>
-		<Resource name="Products"/>
+		
 		<Resource name="Shop" list={ShopList} edit={ShopEdit} create={ShopCreate} show={ShopShow}/>
 		<Resource name="Orders" list={OrderList} edit={OrderEdit} create={OrderCreate} />
-		<Resource name="Services" list={ServiceList} edit={ServiceEdit} create={ServiceCreate}/>
 		<Resource name="Category" list={CategoryList} edit={CategoryEdit} create={CategoryCreate} show={CategoryShow} />
 		<Resource name="BCategory" list={CategoryList} edit={CategoryEdit} create={CategoryCreate} show={CategoryShow} />
 		<Resource name="Add" list={AddList} edit={AddEdit} create={AddCreate} />
+		<Resource name="Coupon" list={CouponList} edit={CouponEdit} create={CouponCreate} />
+		<Resource name="Products"/>
     <Resource name="Category/Item" />
 		<Notifier />
 	</Admin>
