@@ -18,7 +18,7 @@ const App = () => (
 		<Resource name="Orders" list={OrderList} edit={OrderEdit} create={OrderCreate} />
 		<Resource name="Category" list={CategoryList} edit={CategoryEdit} create={CategoryCreate} show={CategoryShow} />
 		<Resource name="BCategory" list={CategoryList} edit={CategoryEdit} create={CategoryCreate} show={CategoryShow} />
-		<Resource name="Add" list={AddList} edit={AddEdit} create={AddCreate} />
+		<Resource name="Add" list={AddList} create={AddCreate} />
 		<Resource name="Coupon" list={CouponList} edit={CouponEdit} create={CouponCreate} />
 		<Resource name="Products"/>
     <Resource name="Category/Item" />

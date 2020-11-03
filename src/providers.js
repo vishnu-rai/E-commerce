@@ -25,8 +25,9 @@ const ex_dataProvider=(type,resource,params)=>{
 						return itemRef.get()
 					})
 					.then(querySnapshot=>{
+						const {Item, ...prevData} = params.previousData
 						const itemArray = querySnapshot.docs.map(doc=>({id: doc.id, ...doc.data()}))
-						return {data: {...data, Item: itemArray}}
+						return {data: {...prevData, Item: itemArray}}
 					})
 				)
 			}
@@ -238,6 +239,49 @@ const ex_dataProvider=(type,resource,params)=>{
 				console.log({itemArray})
 				return {data: itemArray, total: itemArray.length}
 			})
+	}
+
+	if(type==='CREATE' && (resource==='Add')){
+		const {image, ...categoryData} = params.data
+		const docRef = db.collection(resource).doc()
+		return (
+			docRef.set(categoryData)
+			.then(()=>{
+				return docRef.get()
+			})
+			.then(async (doc)=>{
+				const docId = doc.id
+				if(!image){
+					return {data: {id: docId, ...doc.data()}}
+				} 
+				const imageRef = storage.ref().child(resource).child(docId+"_AddImage")
+				await imageRef.put(image.rawFile)
+				const url = await imageRef.getDownloadURL()
+				await docRef.update({
+					image: url
+				})
+				return {data: {id: docId, ...doc.data(), image: url}}
+			})
+		)
+	}
+
+	if(type==='DELETE' && resource==='Add'){
+		const docRef = db.collection(resource).doc(params.id)
+		let url = params.previousData.image || ""
+		if(url){
+			return (
+				storage.refFromURL(url).delete()
+				.then(()=>{
+					return docRef.delete()
+				})
+				.then(()=>{
+					return {data: params.previousData}
+				})
+			)
+		}
+		return docRef.delete().then(()=>{
+			return {data: params.previousData}
+		})
 	}
 	return dataProvider(type,resource,params)
 }

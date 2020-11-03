@@ -2,7 +2,7 @@ import React from 'react'
 import {
   List, Datagrid, TextField, ReferenceField, ImageField, SelectField,
   EditButton, Edit, SimpleForm, TextInput, ReferenceInput, SelectInput, ImageInput, required,
-  Create
+  Create, DeleteButton,
 } from 'react-admin'
 
 export const AddList = props => (
@@ -14,7 +14,7 @@ export const AddList = props => (
             <ReferenceField label="Shop" source="shop_id" reference="Shop">
                 <TextField source="name" />
             </ReferenceField>
-            <EditButton />
+            <DeleteButton />
         </Datagrid>
     </List>
 );
@@ -23,8 +23,8 @@ export const AddEdit = props => (
     <Edit {...props}>
         <SimpleForm>
             <SelectInput source="status" choices={[
-                {id: "Accepted", name: "Accepted"},
-                {id: "Pending", name: "Pending"},
+                {id: "Active", name: "Active"},
+                {id: "Inactive", name: "Inactive"},
                 {id: "Rejected", name: "Rejected"},
             ]} />
             <TextField source="id" />
@@ -43,9 +43,8 @@ export const AddCreate = props => (
             	<ImageField source="src" />
             </ImageInput>
             <SelectInput validate={[required()]} source="status" choices={[
-                {id: "Accepted", name: "Accepted"},
-                {id: "Pending", name: "Pending"},
-                {id: "Rejected", name: "Rejected"},
+                {id: "Active", name: "Active"},
+                {id: "Inactive", name: "Inactive"},
             ]} />
             <ReferenceInput label="Shop" source="shop_id" reference="Shop">
                 <SelectInput optionText="name" optionValue="shop_id" />

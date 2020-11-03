@@ -4,6 +4,7 @@ import React, {useState} from 'react'
 import { withStyles } from '@material-ui/core/styles';
 import IconItemDelete from '@material-ui/icons/Delete';
 import { Button, useUpdate, useRefresh, useNotify } from 'react-admin';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const styles = {
@@ -37,6 +38,7 @@ const CategoryItemDeleteButton = props=>{
         { payload: {id: categoryId, data: {itemId, meta: {isSubCollection: true, type: 'DELETE'}}}},
         {
           onSuccess: ({ data }) => {
+            refresh()
             setShowDialog(false);
           },
           onFailure: ({ error }) => {
@@ -45,6 +47,10 @@ const CategoryItemDeleteButton = props=>{
         }
       );
   };
+
+  if(loading){
+    return <CircularProgress />
+  }
 
   return (
       <Button onClick={handleClick} label="ra.action.delete">

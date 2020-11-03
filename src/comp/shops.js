@@ -40,6 +40,10 @@ export const ShopEdit = props => {
         <SimpleForm warnWhenUnsavedChanges>
             <TextInput disabled label="id" source="shop_id" />
             <TextInput disabled source="email" />
+            <SelectInput source="type" validate={required()} choices={[
+                {id: 'Product', name: "Product"},
+                {id: 'Service', name: "Service"}
+            ]}/>
             <TextInput source="name" validate={required()} />
             <SelectInput source="category_type" validate={required()} choices={[
                 {id: 'Category', name: "Category"},
@@ -54,8 +58,10 @@ export const ShopEdit = props => {
             </FormDataConsumer>
             <EffDropDown source="Items" />
             <TextInput source="Address" />
+            <TextInput source="Pincode" />
+            <TextInput source="min" />
             <TextInput source="delivery_charge" />
-            <TextInput source="type" />
+            
             <ImageInput label="New Image" source="image" accept="image/*">
                 <ImageField source="src" />
             </ImageInput>
@@ -69,6 +75,10 @@ export const ShopCreate = props => (
         <SimpleForm>
             <TextInput source="name" validate={required()}/>
             <TextInput source="email" validate={required()}/>
+            <SelectInput source="type" validate={required()} choices={[
+                {id: 'Product', name: "Product"},
+                {id: 'Service', name: "Service"}
+            ]}/>
             <SelectInput source="category_type" validate={required()} choices={[
                 {id: 'Category', name: "Category"},
                 {id: 'BCategory', name: "BCategory"}
@@ -84,6 +94,10 @@ export const ShopCreate = props => (
             <ImageInput source="image" accept="image/*">
                 <ImageField source="src" />
             </ImageInput>
+            <TextInput source="Address" />
+            <TextInput source="Pincode" />
+            <TextInput source="min" />
+            <TextInput source="delivery_charge" />
             <TextInput source="timing" />
         </SimpleForm>
     </Create>

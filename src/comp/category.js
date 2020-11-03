@@ -73,7 +73,7 @@ const CategoryShowActions = ({basePath, data, resource}) => {
     const categoryId = data ? data.id : null
     return(
         <TopToolbar>
-          <CategoryItemCreateButton customProps={{categoryId, resource}} />
+          <CategoryItemCreateButton customProps={{categoryId, resource, data}} />
           <EditButton basePath={basePath} record={data} />
         </TopToolbar>
     )

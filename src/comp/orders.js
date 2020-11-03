@@ -16,7 +16,7 @@ import Paper from '@material-ui/core/Paper';
 import {parse} from 'query-string'
 export const OrderList = props => (
     <List {...props}>
-        <Datagrid rowClick="edit" expand={expandView}>
+        <Datagrid rowClick="expand" expand={expandView}>
             <TextField source="id" />
             <TextField source="Address_id" />
             <DateField source="Date" />
@@ -69,19 +69,33 @@ export const OrderCreate = props => {
 };
 
 const expandView = props=>(
+  <>
     <Show {...props} component="div" title=" ">
         <SimpleShowLayout>
             <TextField source="Address_id" />
             <ReferenceArrayField label="Ordered items" source="Product_id" reference="Products">
-                <ProdQuan quan={props.record.Quan} />
+                <ProdQuan size={props.record.Size} quan={props.record.Quan} />
             </ReferenceArrayField>
         </SimpleShowLayout>
     </Show>
+    {
+      !!(props.record.Type && props.record.Type==='Service')
+      &&
+      <Edit {...props} title=" " component="div">
+      <SimpleForm>
+        <SelectInput source="Status" choices={[
+          {id: 'Accepted', name: 'Accepted'},
+          {id: 'Cancelled', name: 'Cancelled'}
+        ]} />
+      </SimpleForm>
+    </Edit>
+    }
+  </> 
 )
 
 const ProdQuan = props=>{
     console.log({props})
-    const {quan, data, ids} = props
+    const {size=[], quan=[], data={}, ids=[]} = props
 
     return (
           <Table size="small" aria-label="a dense table">
@@ -90,6 +104,7 @@ const ProdQuan = props=>{
                 <TableCell>Name</TableCell>
                 <TableCell align="right">Quantity</TableCell>
                 <TableCell align="right">Price</TableCell>
+                <TableCell align="right">Size</TableCell>
                 <TableCell align="right">Id</TableCell>
               </TableRow>
             </TableHead>
@@ -100,8 +115,9 @@ const ProdQuan = props=>{
                   <TableCell component="th" scope="row">
                     {data[id].Name}
                   </TableCell>
-                  <TableCell align="right">{quan[index]}</TableCell>
-                  <TableCell align="right">{data[id].Price}</TableCell>
+                  <TableCell align="right">{quan[index] || 0}</TableCell>
+                  <TableCell align="right">{data[id].Price || 0}</TableCell>
+                  <TableCell align="right">{(size[index] == -1) ? " " : size[index]}</TableCell>
                   <TableCell align="right">{id}</TableCell>
                 </TableRow>
                 : null

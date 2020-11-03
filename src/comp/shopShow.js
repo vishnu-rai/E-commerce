@@ -44,6 +44,7 @@ export const ShopShow = props => (
 			<Tab label="Summary">
 				<TextField label="Shop Id" source="shop_id" />
         <TextField source="name" />
+        <TextField source="type" />
 				<TextField source="category" />
         <ArrayField source="Items">
           <SingleFieldList linkType={false}>
@@ -71,7 +72,6 @@ export const ShopShow = props => (
 				    <DeleteButton />
 				  </Datagrid>
 				</ReferenceManyField>
-				<AddProductButton />
 			</Tab>
 			<Tab label="Orders" path="Orders">
 				<ReferenceManyField reference="Orders" target="Shop_id" addLabel={false}>
