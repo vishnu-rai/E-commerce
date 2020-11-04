@@ -11,10 +11,13 @@ import EffDropDown from './effDropDown'
 export const ShopList = props => (
     <List {...props}>
         <Datagrid rowClick="show">
+            <TextField source="status" />
             <TextField source="Address" />
             <TextField source="delivery_charge" />
             <TextField source="type" />
-            <MultiReferenceField source="category"/>
+            <TextField soure="category_type" />
+            <TextField source="category" />
+            {/*<MultiReferenceField source="category"/>*/}
             <TextField source="name" />
             <ImageField source="image" />
             <TextField source="timing" />
@@ -23,16 +26,16 @@ export const ShopList = props => (
     </List>
 );
 
-const MultiReferenceField = ({record, ...rest})=>{
-    if(record){
-        return (
-            <ReferenceField record={record} reference={record.category_type} {...rest}>
-                <TextField source="name" />
-            </ReferenceField>
-        )
-    }
-    return <div/>
-}
+// const MultiReferenceField = ({record, ...rest})=>{
+//     if(record){
+//         return (
+//             <ReferenceField record={record} reference={record.category_type} {...rest}>
+//                 <TextField source="name" />
+//             </ReferenceField>
+//         )
+//     }
+//     return <div/>
+// }
 
 export const ShopEdit = props => {
     return (
@@ -40,6 +43,7 @@ export const ShopEdit = props => {
         <SimpleForm warnWhenUnsavedChanges>
             <TextInput disabled label="id" source="shop_id" />
             <TextInput disabled source="email" />
+            <SelectInput source="status" validate={required()} choices={[{id: '1', name: '1'}, {id: '0', name: '0'}]} />
             <SelectInput source="type" validate={required()} choices={[
                 {id: 'Product', name: "Product"},
                 {id: 'Service', name: "Service"}
@@ -52,11 +56,12 @@ export const ShopEdit = props => {
             <FormDataConsumer> 
                 {({formData, ...rest})=>(
                     <ReferenceInput source="category" reference={formData.category_type || "Category"} {...rest}>
-                        <SelectInput optionText="name" validate={required()} />
+                        <SelectInput optionText="name" optionValue="name" validate={required()} />
                     </ReferenceInput>
                 )}
             </FormDataConsumer>
             <EffDropDown source="Items" />
+            <TextInput source="Phone" />
             <TextInput source="Address" />
             <TextInput source="Pincode" />
             <TextInput source="min" />
@@ -72,7 +77,8 @@ export const ShopEdit = props => {
 
 export const ShopCreate = props => (
     <Create {...props}>
-        <SimpleForm>
+        <SimpleForm initialValues={{status: "1"}}>
+            <TextInput disabled source="status" validate={required()} />
             <TextInput source="name" validate={required()}/>
             <TextInput source="email" validate={required()}/>
             <SelectInput source="type" validate={required()} choices={[
@@ -86,7 +92,7 @@ export const ShopCreate = props => (
             <FormDataConsumer> 
                 {({formData, ...rest})=>(
                     <ReferenceInput source="category" reference={formData.category_type || "Category"} {...rest}>
-                        <SelectInput validate={required()} optionText="name"/>
+                        <SelectInput validate={required()} optionText="name" optionValue="name"/>
                     </ReferenceInput>
                 )}
             </FormDataConsumer>
@@ -94,6 +100,7 @@ export const ShopCreate = props => (
             <ImageInput source="image" accept="image/*">
                 <ImageField source="src" />
             </ImageInput>
+            <TextInput source="Phone" />
             <TextInput source="Address" />
             <TextInput source="Pincode" />
             <TextInput source="min" />

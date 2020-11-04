@@ -61,7 +61,7 @@ export const CategoryCreate = props => (
     <Create {...props}>
         <SimpleForm initialValues={defaultValues}>
             <TextInput source="name" validate={required()}/>
-            <TextInput source="status" />
+            <SelectInput source="status" choices={[{id: 0, name: 0}, {id: 1, name: 1}]} />
             <ImageInput label="New Image" source="image" accept="image/*">
                 <ImageField source="src" />
             </ImageInput>

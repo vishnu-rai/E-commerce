@@ -12,17 +12,18 @@ const EffDropDown = props=>{
   const {input: {onChange, value}} = useInput(props)
   const dataProvider = useDataProvider()
 
+  const selCategoryType = values["category_type"]
   const selCategory = values.category
   const [currCategory, setCurrentCategory] = useState("")
-  console.log({props})
+  const [currCategoryType, setCurrCategoryType] = useState("")
 
   const label = props.source
 
   useEffect(()=>{
-    if(selCategory !== currCategory && !isLoading){
+    if(((selCategory !== currCategory) || (selCategoryType !== currCategoryType)) && !isLoading){
       setIsLoading(true)
       dataProvider.getList('Category/Item',
-            {filter: {category: selCategory}}
+            {filter: {category_type: selCategoryType, category: selCategory}}
           )
       .then(({data})=>{
         if(!isInit){
@@ -31,16 +32,17 @@ const EffDropDown = props=>{
         }
         else setIsInit(false)
         setCurrentCategory(selCategory)
+        setCurrCategoryType(selCategoryType)
         setChoices(data)
         setIsLoading(false)
       })
       .catch(error=>{
+        onChange([])
         setIsLoading(false)
-        setCurrentCategory(selCategory)
         console.log("ERororoor")
       })
     }
-  }, [selCategory, isInit, isLoading, dataProvider, onChange])
+  }, [selCategory, selCategoryType, isInit, isLoading, dataProvider, onChange])
 
   const inputValues = value ? value : []
 

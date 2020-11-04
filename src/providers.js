@@ -19,7 +19,7 @@ const ex_dataProvider=(type,resource,params)=>{
 
 			if(data.meta.type === 'CREATE'){
 					return (
-					itemRef.doc(data.values.type)
+					itemRef.doc()
 					.set(data.values)
 					.then(()=>{
 						return itemRef.get()
@@ -66,7 +66,7 @@ const ex_dataProvider=(type,resource,params)=>{
 
 	if(type==='CREATE' && (resource==='Category' || resource==='BCategory')){
 		const {image, ...categoryData} = params.data
-		const docRef = db.collection(resource).doc(params.data.name)
+		const docRef = db.collection(resource).doc()
 		return (
 			docRef.set(categoryData)
 			.then(()=>{
@@ -122,32 +122,33 @@ const ex_dataProvider=(type,resource,params)=>{
 		  .get().then(async (querySnapshot) =>{
 		    let batch = db.batch()
 		    querySnapshot.docs.forEach(doc=>{
-		      let {list_image: imgURLs=[], Image: imgURL=""} = doc.data()
-		      imgURLs.push(imgURL)
+		      // let {list_image: imgURLs=[], Image: imgURL=""} = doc.data()
+		      // imgURLs.push(imgURL)
 
-		      imgURLs.forEach(url=>{
-		        if(url){
-		          storage.refFromURL(url).delete()
-		          .catch(error=>{
-		            console.error("Error in deleting image: ", url, error.message)
-		          })
-		        }
-		        batch.delete(doc.ref)
+		      // imgURLs.forEach(url=>{
+		      //   if(url){
+		      //     storage.refFromURL(url).delete()
+		      //     .catch(error=>{
+		      //       console.error("Error in deleting image: ", url, error.message)
+		      //     })
+		      //   }
+		      //   batch.delete(doc.ref)
+		      batch.update(doc.ref, {Stock: "0"})
 		      })
-		    })
 		    const shopRef = db.collection('Shop').doc(shopId)
-		    const shopDoc = await shopRef.get()
-		    if(!shopDoc){
-		      throw new Error("No shop found")
-		    }
-		    let url = shopDoc.data().image
-		    if(url){
-		      storage.refFromURL(url).delete()
-		      .catch(error=>{
-		        console.error("Error in deleting image: ", url, error.message)
-		      })
-		    }
-		    batch.delete(shopRef)
+		    // const shopDoc = await shopRef.get()
+		    // if(!shopDoc){
+		    //   throw new Error("No shop found")
+		    // }
+		    // let url = shopDoc.data().image
+		    // if(url){
+		    //   storage.refFromURL(url).delete()
+		    //   .catch(error=>{
+		    //     console.error("Error in deleting image: ", url, error.message)
+		    //   })
+		    // }
+		    // batch.delete(shopRef)
+		    batch.update(shopRef, {status: "0"})
 		    return batch.commit()
 		  })
 		  .then(()=>{
@@ -229,11 +230,13 @@ const ex_dataProvider=(type,resource,params)=>{
 
 	if(type==='GET_LIST' && resource==='Category/Item'){
 		console.log("HHIIIT")
-		const {shop_id, category} = params.filter
-		return db.collection('Category')
-			.doc(category)
-			.collection('Item')
+		const {shop_id, category, category_type} = params.filter
+		return db.collection(category_type).where("name", '==', category)
 			.get()
+			.then(querySnapshot=>{
+				const docRef = querySnapshot.docs[0].ref
+				return docRef.collection('Item').get()
+			})
 			.then(querySnapshot=>{
 				const itemArray = querySnapshot.docs.map(doc=>({id:doc.id, ...doc.data()}))
 				console.log({itemArray})

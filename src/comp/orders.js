@@ -78,7 +78,7 @@ const expandView = props=>(
             </ReferenceArrayField>
         </SimpleShowLayout>
     </Show>
-    {
+    {/*
       !!(props.record.Type && props.record.Type==='Service')
       &&
       <Edit {...props} title=" " component="div">
@@ -89,7 +89,7 @@ const expandView = props=>(
         ]} />
       </SimpleForm>
     </Edit>
-    }
+    */}
   </> 
 )
 

@@ -60,7 +60,7 @@ export const ShopShow = props => (
 			</Tab>
 			<Tab label="Products" path="Products">
 				<ReferenceManyField reference="Products" target="Shop_id" addLabel={false}>
-					<Datagrid rowClick="edit" isRowSelectable={record=>true} optimized>
+					<Datagrid rowClick="edit" optimized>
 				    <TextField source="id" />
 				    <ImageField source="Image" title="random"/> 
 				    <TextField source="Price" />
@@ -68,8 +68,7 @@ export const ShopShow = props => (
 				    <TextField source="Item" />
 				    <TextField source="Category" />
 				    <TextField source="Brand" />
-				    <EditButton />
-				    <DeleteButton />
+            <TextField source="Stock" />
 				  </Datagrid>
 				</ReferenceManyField>
 			</Tab>
