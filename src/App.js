@@ -15,7 +15,7 @@ const App = () => (
 	<Admin dataProvider={ex_dataProvider} authProvider={authProvider}>
 		
 		<Resource name="Shop" list={ShopList} edit={ShopEdit} create={ShopCreate} show={ShopShow}/>
-		<Resource name="Orders" list={OrderList} edit={OrderEdit} create={OrderCreate} />
+		<Resource name="Orders" list={OrderList} edit={OrderEdit} />
 		<Resource name="Category" list={CategoryList} edit={CategoryEdit} create={CategoryCreate} show={CategoryShow} />
 		<Resource name="BCategory" list={CategoryList} edit={CategoryEdit} create={CategoryCreate} show={CategoryShow} />
 		<Resource name="Add" list={AddList} create={AddCreate} />

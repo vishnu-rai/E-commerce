@@ -5,7 +5,7 @@ import {
   Show, SimpleShowLayout, ArrayField,
   Create,
   ArrayInput, SimpleFormIterator,
-  CardActions, ListButton, RefreshButton, TopToolbar,
+  CardActions, ListButton, RefreshButton, TopToolbar, required,
 } from 'react-admin'
 
 import CategoryItemCreateButton from './CategoryItemCreateButton'
@@ -47,7 +47,7 @@ export const CategoryEdit = props => (
     <Edit {...props}>
         <SimpleForm>
             <TextInput disabled source="id" />
-            <TextInput source="name" />
+            <TextInput disabled source="name" />
             <TextInput source="status" />
             <ImageInput label="New Image" source="image" accept="image/*">
                 <ImageField source="src" />
@@ -60,7 +60,7 @@ const defaultValues = {status: "1"}
 export const CategoryCreate = props => (
     <Create {...props}>
         <SimpleForm initialValues={defaultValues}>
-            <TextInput source="name" />
+            <TextInput source="name" validate={required()}/>
             <TextInput source="status" />
             <ImageInput label="New Image" source="image" accept="image/*">
                 <ImageField source="src" />

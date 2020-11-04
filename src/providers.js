@@ -19,7 +19,7 @@ const ex_dataProvider=(type,resource,params)=>{
 
 			if(data.meta.type === 'CREATE'){
 					return (
-					itemRef.doc()
+					itemRef.doc(data.values.type)
 					.set(data.values)
 					.then(()=>{
 						return itemRef.get()
@@ -66,7 +66,7 @@ const ex_dataProvider=(type,resource,params)=>{
 
 	if(type==='CREATE' && (resource==='Category' || resource==='BCategory')){
 		const {image, ...categoryData} = params.data
-		const docRef = db.collection(resource).doc()
+		const docRef = db.collection(resource).doc(params.data.name)
 		return (
 			docRef.set(categoryData)
 			.then(()=>{
@@ -83,7 +83,7 @@ const ex_dataProvider=(type,resource,params)=>{
 				await docRef.update({
 					image: url
 				})
-				return {data: {categoryId, ...doc.data(), image: url}}
+				return {data: {id: categoryId, ...doc.data(), image: url}}
 			})
 		)
 	}
@@ -245,7 +245,12 @@ const ex_dataProvider=(type,resource,params)=>{
 		const {image, ...categoryData} = params.data
 		const docRef = db.collection(resource).doc()
 		return (
-			docRef.set(categoryData)
+			db.collection('Shop').doc(categoryData.shop_id)
+			.get()
+			.then(doc=>{
+				categoryData["category"] = doc.data().category
+				return docRef.set(categoryData)
+			})
 			.then(()=>{
 				return docRef.get()
 			})
