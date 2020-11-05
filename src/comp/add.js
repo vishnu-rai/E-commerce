@@ -22,10 +22,9 @@ export const AddList = props => (
 export const AddEdit = props => (
     <Edit {...props}>
         <SimpleForm>
-            <SelectInput source="status" choices={[
+            <SelectInput source="status" validate={required()} choices={[
                 {id: "Active", name: "Active"},
                 {id: "Inactive", name: "Inactive"},
-                {id: "Rejected", name: "Rejected"},
             ]} />
             <TextField source="id" />
             <ImageField source="image" />
