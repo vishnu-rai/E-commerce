@@ -60,7 +60,7 @@ export const ShopShow = props => (
 			</Tab>
 			<Tab label="Products" path="Products">
 				<ReferenceManyField reference="Products" target="Shop_id" addLabel={false}>
-					<Datagrid rowClick="edit" optimized>
+					<Datagrid optimized>
 				    <TextField source="id" />
 				    <ImageField source="Image" title="random"/> 
 				    <TextField source="Price" />
@@ -74,7 +74,7 @@ export const ShopShow = props => (
 			</Tab>
 			<Tab label="Orders" path="Orders">
 				<ReferenceManyField reference="Orders" target="Shop_id" addLabel={false}>
-					<Datagrid rowClick="edit" optimized>
+					<Datagrid optimized>
 						<TextField source="id" />
             <TextField source="Payment_type" />
             <TextField source="Address_id" />
@@ -84,7 +84,6 @@ export const ShopShow = props => (
             <TextField source="Price" />
             <TextField source="Status" />
             <TextField source="Type" />
-            <EditButton />
 					</Datagrid>
 				</ReferenceManyField>
 			</Tab>
