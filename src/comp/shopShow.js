@@ -81,7 +81,7 @@ export const ShopShow = props => (
             <TextField source="Address_id" />
             <DateField source="Date" />
             <TextField source="Payment_type" />
-            <TextField source="Total_Price" />
+            <TextField source="Total_price" />
             <TextField source="Status" />
             <TextField source="Type" />
             <TextField source="User_id" />
