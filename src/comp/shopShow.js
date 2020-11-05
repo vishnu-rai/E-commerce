@@ -62,9 +62,10 @@ export const ShopShow = props => (
 				<ReferenceManyField reference="Products" target="Shop_id" addLabel={false}>
 					<Datagrid optimized>
 				    <TextField source="id" />
+            <TextField source="Name" />
 				    <ImageField source="Image" title="random"/> 
 				    <TextField source="Price" />
-				    <TextField source="Description" />
+            <TextField source="Mrp" />
 				    <TextField source="Item" />
 				    <TextField source="Category" />
 				    <TextField source="Brand" />
@@ -76,14 +77,14 @@ export const ShopShow = props => (
 				<ReferenceManyField reference="Orders" target="Shop_id" addLabel={false}>
 					<Datagrid optimized>
 						<TextField source="id" />
-            <TextField source="Payment_type" />
+            <TextField source="Number" />
             <TextField source="Address_id" />
-            <ReferenceField source="Product_id" reference="Products"><TextField source="id" /></ReferenceField>
             <DateField source="Date" />
-            <ReferenceField source="Shop_id" reference="Shop"><TextField source="id" /></ReferenceField>
-            <TextField source="Price" />
+            <TextField source="Payment_type" />
+            <TextField source="Total_Price" />
             <TextField source="Status" />
             <TextField source="Type" />
+            <TextField source="User_id" />
 					</Datagrid>
 				</ReferenceManyField>
 			</Tab>
