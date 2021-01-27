@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="stop.one.ozo_seller">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/app_logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".activity.splash"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".activity.FirebaseMessangingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".activity.banner_request" />
+        <activity android:name=".activity.banner_status" />
+        <activity android:name=".activity.add_clothing_product" />
+        <activity android:name=".activity.add_electronic_product" />
+        <activity android:name=".activity.add_other_products" />
+        <activity android:name=".activity.product_list" />
+        <activity android:name=".activity.choose_item" />
+        <activity android:name=".activity.order_detail" />
+        <activity android:name=".activity.order_list">
+            <intent-filter>
+                <action android:name="stop.one.ozo_seller.firebasepushnotification.TARGETNOTIFICATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.login"></activity>
+        <activity android:name=".activity.MainActivity" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+    </application>
+
+</manifest>

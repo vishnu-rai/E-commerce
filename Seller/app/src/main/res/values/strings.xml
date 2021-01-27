@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">OZO-Seller</string>
+    <string name="default_notification_channel_id">CH001</string>
+
+</resources>
